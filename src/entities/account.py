@@ -60,3 +60,6 @@ class Account(Entity):
     @password.setter
     def password(self, password: str) -> None:
         self.__password_helper = password
+
+    def __str__(self):
+        return f"Account {self.__username}:{self.id}"

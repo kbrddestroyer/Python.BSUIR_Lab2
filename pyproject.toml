@@ -18,5 +18,5 @@ black = { optional = true }
 
 [tool.pytest.ini_options]
 pythonpath = [
-	".", "./src/", "./src/entities/"
+    ".", "src"
 ]
