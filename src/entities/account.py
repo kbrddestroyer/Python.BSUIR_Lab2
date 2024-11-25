@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import typing
 
-from Entity import Entity
 from hashlib import md5
+from entity import Entity
 
 if typing.TYPE_CHECKING:
     from typing import Optional, Any
@@ -17,14 +17,14 @@ class HashedValue:
     def __init__(self) -> None:
         self.__name = None
 
-    def __set_name__(self, owner, name):
-        self.__name = f'_{owner.__name__}__{name}_desc'
+    def __set_name__(self, owner: Any, name: str) -> None:
+        self.__name = f"_{owner.__name__}__{name}_desc"
 
-    def __get__(self, instance, objtype = None) -> Any:
+    def __get__(self, instance: Any, _: type = None) -> Any:
         return getattr(instance, self.__name)
 
     def __set__(self, instance, value: Any) -> None:
-        value = md5(value.encode('utf-8')).hexdigest()
+        value = md5(value.encode("utf-8")).hexdigest()
         setattr(instance, self.__name, value)
 
 
