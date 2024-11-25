@@ -6,4 +6,7 @@ import tkinter as tk
 
 
 if __name__ == '__main__':
-    print('Hello')
+    main = tk.Tk()
+
+    main.title('Hello World!')
+    main.mainloop()
