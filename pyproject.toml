@@ -1,0 +1,22 @@
+[project]
+name = "LAB2"
+version = "1.0.0"
+readme = "README.md"
+
+requires-python = ">=3.11"
+dependencies = [
+    "tk",
+    "pytest"
+]
+
+[build-system]
+requires = ["poetry-core", "poetry"]
+
+[project.optional-dependencies]
+pylint = { optional = true }
+black = { optional = true }
+
+[tool.pytest.ini_options]
+pythonpath = [
+	".", "./src/", "./src/entities/"
+]
