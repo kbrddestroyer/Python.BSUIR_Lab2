@@ -1,8 +1,3 @@
-"""
-Entity base class
-"""
-
-
 class Entity:
     ENTITIES = 0
 

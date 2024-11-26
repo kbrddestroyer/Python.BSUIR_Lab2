@@ -1,4 +1,4 @@
-from src.connectors.connector_base import get_global_connector, g_connector
+from connectors.connector_base import get_global_connector, g_connector
 
 
 def test_ConnectorBase__get_global_connector():
