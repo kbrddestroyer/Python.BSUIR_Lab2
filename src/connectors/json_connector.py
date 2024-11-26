@@ -31,6 +31,7 @@ class JsonConnector(connector_base.ConnectorBase):
         except FileNotFoundError:
             JsonConnector.__try_create_file(filename)
             file = open(filename, 'w+')
+        assert file
         return file
 
     @staticmethod
@@ -45,12 +46,11 @@ class JsonConnector(connector_base.ConnectorBase):
             return {}
 
     def __save_data(self) -> None:
-        self.__file.flush()
         self.__file.write(json.dumps(self.__data, indent=4))
 
     @override
     def read(self, key) -> Any:
-        return self.__data.get(key, None)
+        return self.__data.get(key, {})
 
     @override
     def write(self, key, value) -> None:
@@ -58,7 +58,10 @@ class JsonConnector(connector_base.ConnectorBase):
 
     @override
     def get_from(self, source: str, limit: Optional[int] = None) -> Any:
-        return self.read(source)[:limit] if limit else self.read(source)
+        data = self.read(source)
+        if not limit or not data:
+            return data
+        return data[:limit if limit <= len(data) else len(data)]
 
     @override
     def insert(self, destination: str, dao: Any) -> None:

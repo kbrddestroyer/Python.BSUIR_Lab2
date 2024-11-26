@@ -5,17 +5,17 @@ Entrypoint
 from connectors import g_connector
 from connectors import connector_base
 from dao import dao_base
+from dao import account_dao
 
 
 def main():
-    connector: connector_base.ConnectorBase = g_connector
-    dao = dao_base.DaoBase({'username': 'admin', 'password': 'qwerty'})
-    connector.insert('account', dao)
+    dao = account_dao.AccountDao.create_from_data_source('account', dao_base.DaoBase)
+    print(dao)
 
-    init = connector.get_from('account')
-    dao2 = dao_base.DaoBase(init)
+    dao['username'] = 'admin'
+    dao['password'] = 'qwerty123'
 
-    assert dao.username == dao2.username
+    dao.apply('account')
 
 
 if __name__ == "__main__":
