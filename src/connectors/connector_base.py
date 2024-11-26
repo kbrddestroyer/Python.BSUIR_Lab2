@@ -7,10 +7,10 @@ from abc import abstractmethod
 from constants import CONNECTOR_CONFIG
 
 if typing.TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Optional
 
 
-global __g_connector
+global g_connector
 
 
 class ConnectorBase:
@@ -20,7 +20,7 @@ class ConnectorBase:
     """
 
     def __init__(self, source: Any):
-        self.__source = source
+        self._source = source
 
     @abstractmethod
     def read(self, *args, **kwargs) -> Any:
@@ -30,26 +30,10 @@ class ConnectorBase:
     def write(self, *args, **kwargs) -> None:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_from(self, source: str, limit: Optional[int] = None) -> Any:
+        raise NotImplementedError
 
-def get_global_connector() -> None:
-    global __g_connector
-
-    from connectors import create_connectors
-
-    config = configparser.ConfigParser()
-    config.read(CONNECTOR_CONFIG)
-
-    connector_class = config['CONNECTOR_CLASS']['connector']
-    source = config['CONNECTOR_CLASS']['source']
-
-    subclasses = create_connectors()
-    for connector in subclasses:
-        if connector_class == connector.__name__:
-            __g_connector = connector(source)
-            return
-
-
-@property
-def g_connector():
-    global __g_connector
-    return __g_connector
+    @abstractmethod
+    def insert(self, destination: str, dao: Any) -> None:
+        raise NotImplementedError

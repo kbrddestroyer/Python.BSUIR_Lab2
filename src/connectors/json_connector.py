@@ -7,17 +7,14 @@ from typing import override
 from connectors import connector_base
 
 if typing.TYPE_CHECKING:
-    from typing import Any, Optional
+    from typing import Any, Optional, Dict
 
 
 class JsonConnector(connector_base.ConnectorBase):
     def __init__(self, filename: str) -> None:
         super().__init__(filename)
 
-        try:
-            self.__file = open(filename, 'r+')
-        except FileNotFoundError:
-            self.__file = None
+        self.__file = JsonConnector.__open_file(filename)
 
         if self.__file:
             self.__data = self.__prepare_data()
@@ -27,14 +24,29 @@ class JsonConnector(connector_base.ConnectorBase):
             self.__save_data()
             self.__file.close()
 
-    def __prepare_data(self) -> Optional[dict]:
+    @staticmethod
+    def __open_file(filename):
+        try:
+            file = open(filename, 'w+')
+        except FileNotFoundError:
+            JsonConnector.__try_create_file(filename)
+            file = open(filename, 'w+')
+        return file
+
+    @staticmethod
+    def __try_create_file(filename: str) -> None:
+        with open(filename, 'w') as _:
+            pass
+
+    def __prepare_data(self) -> Dict:
         try:
             return json.load(self.__file)
         except json.decoder.JSONDecodeError:
-            return None
+            return {}
 
     def __save_data(self) -> None:
-        self.__file.write(json.dumps(self.__data))
+        self.__file.flush()
+        self.__file.write(json.dumps(self.__data, indent=4))
 
     @override
     def read(self, key) -> Any:
@@ -43,6 +55,14 @@ class JsonConnector(connector_base.ConnectorBase):
     @override
     def write(self, key, value) -> None:
         self.__data[key] = value
+
+    @override
+    def get_from(self, source: str, limit: Optional[int] = None) -> Any:
+        return self.read(source)[:limit] if limit else self.read(source)
+
+    @override
+    def insert(self, destination: str, dao: Any) -> None:
+        self.write(destination, dao.__dict__())
 
     def __getitem__(self, key: str) -> Any:
         return self.__data.get(key, None)

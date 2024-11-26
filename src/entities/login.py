@@ -4,6 +4,7 @@ import typing
 
 from dataclasses import dataclass
 from entities import account
+from connectors import g_connector
 
 if typing.TYPE_CHECKING:
     from typing import Optional, List
@@ -21,4 +22,4 @@ class Login:
         self.__accounts: List[Account] = []
 
     def try_login(self, credentials: Credentials) -> bool:
-        pass
+        g_connector.read()
