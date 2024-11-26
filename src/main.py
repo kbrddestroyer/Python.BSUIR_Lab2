@@ -2,11 +2,7 @@
 Entrypoint
 """
 
-import tkinter as tk
-
+from entities.account import Account
 
 if __name__ == "__main__":
-    main = tk.Tk()
-
-    main.title("Hello World!")
-    main.mainloop()
+    pass

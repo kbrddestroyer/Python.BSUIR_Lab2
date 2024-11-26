@@ -1,4 +1,4 @@
-from src.entities.account import Account
+from entities.account import Account
 
 
 def test_Account_password():

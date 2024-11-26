@@ -3,10 +3,11 @@ from __future__ import annotations
 import typing
 
 from dataclasses import dataclass
-from account import Account
+from entities import account
 
 if typing.TYPE_CHECKING:
     from typing import Optional, List
+    from account import Account
 
 
 @dataclass

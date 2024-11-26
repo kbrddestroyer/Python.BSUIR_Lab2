@@ -4,18 +4,18 @@ import typing
 import json
 
 from typing import override
-from connector_base import ConnectorBase
+from connectors import connector_base
 
 if typing.TYPE_CHECKING:
     from typing import Any, Optional
 
 
-class JsonConnector(ConnectorBase):
+class JsonConnector(connector_base.ConnectorBase):
     def __init__(self, filename: str) -> None:
         super().__init__(filename)
 
         try:
-            self.__file = open(filename, 'rw')
+            self.__file = open(filename, 'r+')
         except FileNotFoundError:
             self.__file = None
 

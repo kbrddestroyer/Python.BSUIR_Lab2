@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 from hashlib import md5
-from entity import Entity
+from entities import entity
 
 if typing.TYPE_CHECKING:
     from typing import Optional, Any
@@ -28,7 +28,7 @@ class HashedValue:
         setattr(instance, self.__name, value)
 
 
-class Account(Entity):
+class Account(entity.Entity):
     """
     Account entity contains basic user data, handles password hashing process
     Used in role management system. Derived from Entity
