@@ -6,7 +6,7 @@ from connectors import g_connector
 from constants import DAO_CONFIGS
 
 if typing.TYPE_CHECKING:
-    from typing import Dict, Type, List, Any
+    from typing import Dict, Type, Any
 
 
 class DaoConfig:
@@ -18,20 +18,20 @@ class DaoConfig:
         return self.raw.get(key)
 
     def get_config(self) -> Dict[str, Any]:
-        filename = DAO_CONFIGS + self.classname + '.json'
+        filename = DAO_CONFIGS + self.classname + ".json"
 
         try:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 return json.load(f)
         except FileNotFoundError:
             return {}
 
 
 class DaoBase:
-    FIELDS = ('_classname', '_data', '__class__')
+    FIELDS = ("_classname", "_data", "__class__")
     CONFIGS = {}
 
-    def __init__(self,data: Dict) -> None:
+    def __init__(self, data: Dict) -> None:
         classname = self.__class__.__name__
         if classname not in DaoBase.CONFIGS:
             DaoBase.CONFIGS[classname] = DaoConfig(classname)
@@ -51,15 +51,15 @@ class DaoBase:
     def __getattribute__(self, item):
         if item in DaoBase.FIELDS:
             return super().__getattribute__(item)
-        if item in DaoBase.CONFIGS[self._classname]['fields']:
-            return super().__getattribute__('_data').get(item)
+        if item in DaoBase.CONFIGS[self._classname]["fields"]:
+            return super().__getattribute__("_data").get(item)
         return super().__getattribute__(item)
 
     def __setattr__(self, item, value):
         if item in DaoBase.FIELDS:
             return super().__setattr__(item, value)
-        if item in DaoBase.CONFIGS[self._classname]['fields']:
-            super().__getattribute__('_data')[item] = value
+        if item in DaoBase.CONFIGS[self._classname]["fields"]:
+            super().__getattribute__("_data")[item] = value
             return
         return super().__setattr__(item, value)
 

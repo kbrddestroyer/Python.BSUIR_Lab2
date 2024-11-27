@@ -17,8 +17,8 @@ def _create_g_connector() -> Optional[ConnectorBase]:
     config = configparser.ConfigParser()
     config.read(CONNECTOR_CONFIG)
 
-    connector_class = config['CONNECTOR_CLASS']['connector']
-    source = config['CONNECTOR_CLASS']['source']
+    connector_class = config["CONNECTOR_CLASS"]["connector"]
+    source = config["CONNECTOR_CLASS"]["source"]
 
     subclasses = connector_base.ConnectorBase.__subclasses__()
     for connector in subclasses:

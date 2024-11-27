@@ -27,16 +27,16 @@ class JsonConnector(connector_base.ConnectorBase):
     @staticmethod
     def __open_file(filename):
         try:
-            file = open(filename, 'w+')
+            file = open(filename, "w+")
         except FileNotFoundError:
             JsonConnector.__try_create_file(filename)
-            file = open(filename, 'w+')
+            file = open(filename, "w+")
         assert file
         return file
 
     @staticmethod
     def __try_create_file(filename: str) -> None:
-        with open(filename, 'w') as _:
+        with open(filename, "w") as _:
             pass
 
     def __prepare_data(self) -> Dict:
@@ -62,7 +62,7 @@ class JsonConnector(connector_base.ConnectorBase):
         data = self.read(source)
         if not limit or not data:
             return data
-        return data[:limit if limit <= len(data) else len(data)]
+        return data[: limit if limit <= len(data) else len(data)]
 
     @override
     def insert(self, destination: str, dao: Any) -> None:

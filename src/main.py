@@ -9,15 +9,17 @@ from dao import account_dao
 
 
 def main():
-    dao = account_dao.AccountDao.create_from_data_source('account', account_dao.AccountDao)
+    dao = account_dao.AccountDao.create_from_data_source(
+        "account", account_dao.AccountDao
+    )
     print(dao)
 
-    dao['username'] = 'admin'
-    dao.password = 'qwerty'
+    dao["username"] = "admin"
+    dao.password = "qwerty"
 
     print(dao.password)
 
-    dao.apply('account')
+    dao.apply("account")
 
 
 if __name__ == "__main__":
