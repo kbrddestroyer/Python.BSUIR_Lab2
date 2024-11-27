@@ -1,18 +1,15 @@
 """
 Entrypoint
 """
-
 from connectors import g_connector
-from connectors import connector_base
-from dao import dao_base
 from dao import account_dao
 
 
 def main():
     dao = account_dao.AccountDao.create_from_data_source(
         "account", account_dao.AccountDao
-    )
-    print(dao)
+    )['admin']
+    print(dao.username)
 
     dao["username"] = "admin"
     dao.password = "qwerty"
@@ -20,6 +17,7 @@ def main():
     print(dao.password)
 
     dao.apply("account")
+    g_connector.finish()
 
 
 if __name__ == "__main__":

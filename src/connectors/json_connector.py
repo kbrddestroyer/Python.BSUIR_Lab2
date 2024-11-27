@@ -8,36 +8,26 @@ from connectors import connector_base
 
 if typing.TYPE_CHECKING:
     from typing import Any, Optional, Dict
+    from dao import dao_base
 
 
 class JsonConnector(connector_base.ConnectorBase):
     def __init__(self, filename: str) -> None:
         super().__init__(filename)
-
+        self.__filename = filename
         self.__file = JsonConnector.__open_file(filename)
 
         if self.__file:
             self.__data = self.__prepare_data()
 
-    def __del__(self) -> None:
+    def finish(self) -> None:
         if self.__file:
             self.__save_data()
             self.__file.close()
 
     @staticmethod
     def __open_file(filename):
-        try:
-            file = open(filename, "w+")
-        except FileNotFoundError:
-            JsonConnector.__try_create_file(filename)
-            file = open(filename, "w+")
-        assert file
-        return file
-
-    @staticmethod
-    def __try_create_file(filename: str) -> None:
-        with open(filename, "w") as _:
-            pass
+        return open(filename, "r")
 
     def __prepare_data(self) -> Dict:
         try:
@@ -47,15 +37,25 @@ class JsonConnector(connector_base.ConnectorBase):
 
     def __save_data(self) -> None:
         if self.__file:
-            self.__file.write(json.dumps(self.__data, indent=4))
+            self.__file.close()
+            with open(self.__filename, 'w') as f:
+                json.dump(self.__data, indent=4, fp=f)
 
     @override
-    def read(self, key) -> Any:
-        return self.__data.get(key, {})
+    def read(self, key: str) -> Any:
+        keys = key.split('/')
+        data = self.__data
+        for k in keys:
+            if k not in data:
+                return {}
+            data = data[k]
+        return data
 
     @override
-    def write(self, key, value) -> None:
-        self.__data[key] = value
+    def write(self, key, pk, value) -> None:
+        if key not in self.__data:
+            self.__data[key] = {}
+        self.__data[key][pk] = value
 
     @override
     def get_from(self, source: str, limit: Optional[int] = None) -> Any:
@@ -65,8 +65,8 @@ class JsonConnector(connector_base.ConnectorBase):
         return data[: limit if limit <= len(data) else len(data)]
 
     @override
-    def insert(self, destination: str, dao: Any) -> None:
-        self.write(destination, dao.__dict__())
+    def insert(self, destination: str, dao: dao_base.DaoBase) -> None:
+        self.write(destination, dao.primary_key, dao.__dict__())
 
     def __getitem__(self, key: str) -> Any:
         return self.__data.get(key, None)

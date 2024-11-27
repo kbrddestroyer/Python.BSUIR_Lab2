@@ -28,7 +28,7 @@ class DaoConfig:
 
 
 class DaoBase:
-    FIELDS = ("_classname", "_data", "__class__")
+    FIELDS = ("_classname", "_data", "_primary_key",  "__class__")
     CONFIGS = {}
 
     def __init__(self, data: Dict) -> None:
@@ -38,6 +38,11 @@ class DaoBase:
 
         self._data = data
         self._classname = classname
+        self._primary_key = DaoBase.CONFIGS[classname]['primary']
+
+    @property
+    def primary_key(self):
+        return self._data[self._primary_key]
 
     def __dict__(self) -> Dict:
         return self._data
@@ -67,6 +72,10 @@ class DaoBase:
         g_connector.insert(destination, self)
 
     @staticmethod
-    def create_from_data_source(source: str, cls: Type[DaoBase]) -> DaoBase:
-        data = g_connector.get_from(source, 1)
-        return cls(data)
+    def create_from_data_source(source: str, cls: Type[DaoBase]) -> DaoBase or Dict[Any, DaoBase]:
+        data = g_connector.get_from(source)
+        objects = {}
+        for key, init_data in data.items():
+            dao = cls(init_data)
+            objects[key] = dao
+        return objects
