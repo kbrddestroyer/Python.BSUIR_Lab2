@@ -5,6 +5,8 @@ import typing
 from hashlib import md5
 from entities import entity
 
+from dao import account_dao
+
 if typing.TYPE_CHECKING:
     from typing import Optional, Any
 
@@ -44,6 +46,17 @@ class Account(entity.Entity):
         super().__init__()
 
         self.__username: Optional[str] = None
+
+    def from_dao(self, dao: account_dao.AccountDao):
+        self.__username = dao.username
+        self.__password_helper = dao.password
+
+    def to_dao(self) -> account_dao.AccountDao:
+        data = {
+            'username': self.__username,
+            'password': self.__password_helper
+        }
+        return account_dao.AccountDao(data)
 
     @property
     def username(self) -> Optional[str]:
