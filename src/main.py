@@ -9,11 +9,13 @@ from dao import account_dao
 
 
 def main():
-    dao = account_dao.AccountDao.create_from_data_source('account', dao_base.DaoBase)
+    dao = account_dao.AccountDao.create_from_data_source('account', account_dao.AccountDao)
     print(dao)
 
     dao['username'] = 'admin'
     dao['password'] = 'qwerty123'
+
+    print(dao.password)
 
     dao.apply('account')
 

@@ -9,7 +9,5 @@ if typing.TYPE_CHECKING:
 
 
 class AccountDao(dao_base.DaoBase):
-    __slots__ = ('username', 'password')
-
     def __init__(self, data: Dict) -> None:
         super().__init__(data)

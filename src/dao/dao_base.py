@@ -8,6 +8,8 @@ if typing.TYPE_CHECKING:
 
 
 class DaoBase:
+    FIELDS = ()
+
     def __init__(self, data: Dict) -> None:
         self._data = data
 
@@ -19,6 +21,12 @@ class DaoBase:
 
     def __setitem__(self, key: str, value: Any) -> None:
         self._data[key] = value
+
+    def __getattribute__(self, item):
+        data = super().__getattribute__('_data')
+        if item in data:
+            return data.get(item)
+        return super().__getattribute__(item)
 
     def apply(self, destination: str):
         g_connector.insert(destination, self)
