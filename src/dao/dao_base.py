@@ -72,9 +72,13 @@ class DaoBase:
         g_connector.insert(destination, self)
 
     @staticmethod
-    def create_from_data_source(source: str, cls: Type[DaoBase]) -> DaoBase or Dict[Any, DaoBase]:
+    def create_from_data_source(source: str, cls: Type[DaoBase], is_single: bool = False) -> DaoBase or Dict[Any, DaoBase]:
         data = g_connector.get_from(source)
         objects = {}
+
+        if is_single:
+            return cls(data)
+
         for key, init_data in data.items():
             dao = cls(init_data)
             objects[key] = dao

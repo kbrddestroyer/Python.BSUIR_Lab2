@@ -11,6 +11,10 @@ if typing.TYPE_CHECKING:
     from typing import Optional, Any
 
 
+def hash_password(password: str) -> str:
+    return md5(password.encode("utf-8")).hexdigest()
+
+
 class HashedValue:
     """
     Automatically converts variable to md5 hash
@@ -26,7 +30,7 @@ class HashedValue:
         return getattr(instance, self.__name)
 
     def __set__(self, instance, value: Any) -> None:
-        value = md5(value.encode("utf-8")).hexdigest()
+        value = hash_password(value)
         setattr(instance, self.__name, value)
 
 

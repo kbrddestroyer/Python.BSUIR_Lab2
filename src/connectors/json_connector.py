@@ -16,20 +16,22 @@ class JsonConnector(connector_base.ConnectorBase):
         super().__init__(filename)
         self.__filename = filename
         self.__file = JsonConnector.__open_file(filename)
-
-        if self.__file:
-            self.__data = self.__prepare_data()
+        self.__data = self.__prepare_data()
 
     def finish(self) -> None:
-        if self.__file:
-            self.__save_data()
-            self.__file.close()
+        self.__save_data()
 
     @staticmethod
     def __open_file(filename):
-        return open(filename, "r")
+        try:
+            return open(filename, "r")
+        except FileNotFoundError:
+            return None
 
     def __prepare_data(self) -> Dict:
+        if not self.__file:
+            return {}
+
         try:
             return json.load(self.__file)
         except json.decoder.JSONDecodeError:
@@ -38,8 +40,8 @@ class JsonConnector(connector_base.ConnectorBase):
     def __save_data(self) -> None:
         if self.__file:
             self.__file.close()
-            with open(self.__filename, 'w') as f:
-                json.dump(self.__data, indent=4, fp=f)
+        with open(self.__filename, 'w') as f:
+            json.dump(self.__data, indent=4, fp=f)
 
     @override
     def read(self, key: str) -> Any:
