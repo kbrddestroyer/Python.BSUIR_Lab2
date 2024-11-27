@@ -1,7 +1,7 @@
 """
 Entrypoint
 """
-from entities import account, login
+from controllers import login
 
 
 def main():
@@ -10,9 +10,8 @@ def main():
 
     credentials = login.Credentials(username, password)
 
-    login_handler = login.Login()
+    result, entity = login.Login.try_login(credentials)
 
-    result, entity = login_handler.try_login(credentials)
     if not entity:
         print(f"Login invalid, error code: {result}")
         return
