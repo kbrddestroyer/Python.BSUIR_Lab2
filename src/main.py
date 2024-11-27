@@ -13,7 +13,7 @@ def main():
     print(dao)
 
     dao['username'] = 'admin'
-    dao['password'] = 'qwerty123'
+    dao.password = 'qwerty'
 
     print(dao.password)
 

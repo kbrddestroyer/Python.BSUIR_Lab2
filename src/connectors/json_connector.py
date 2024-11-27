@@ -46,7 +46,8 @@ class JsonConnector(connector_base.ConnectorBase):
             return {}
 
     def __save_data(self) -> None:
-        self.__file.write(json.dumps(self.__data, indent=4))
+        if self.__file:
+            self.__file.write(json.dumps(self.__data, indent=4))
 
     @override
     def read(self, key) -> Any:
