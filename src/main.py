@@ -1,29 +1,23 @@
 """
 Entrypoint
 """
-from connectors import g_connector
-from dao import account_dao
 from entities import account, login
 
 
 def main():
-    dao = account_dao.AccountDao.create_from_data_source(
-        "account/admin", account_dao.AccountDao, True
-    )
-    print(dao.username)
+    username = input('> ')
+    password = input('> ')
 
-    dao["username"] = "admin"
-    dao.password = "qwerty"
+    credentials = login.Credentials(username, password)
 
-    print(dao.password)
+    login_handler = login.Login()
 
-    acc = account.Account()
-    acc.from_dao(dao)
+    result, entity = login_handler.try_login(credentials)
+    if not entity:
+        print(f"Login invalid, error code: {result}")
+        return
 
-    dao = acc.to_dao()
-
-    dao.apply("account")
-    g_connector.finish()
+    print(f"Logged in as {entity.username}")
 
 
 if __name__ == "__main__":
