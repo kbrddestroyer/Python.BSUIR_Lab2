@@ -6,7 +6,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "tk",
-    "pytest"
+    "pytest",
+    "setuptools",
+    "importlib"
 ]
 
 [build-system]
@@ -17,6 +19,5 @@ pylint = { optional = true }
 black = { optional = true }
 
 [tool.pytest.ini_options]
-pythonpath = [
-	".", "./src/", "./src/entities/"
-]
+pythonpath = [".", "src"]
+testpaths = ["tests"]

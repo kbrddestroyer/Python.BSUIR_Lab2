@@ -1,8 +1,3 @@
-"""
-Entity base class
-"""
-
-
 class Entity:
     ENTITIES = 0
 
@@ -13,3 +8,6 @@ class Entity:
     @property
     def id(self):
         return self.__id
+
+    def __str__(self):
+        return f"Entity {self.id}"
