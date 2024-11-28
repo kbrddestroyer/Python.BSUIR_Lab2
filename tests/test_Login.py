@@ -1,30 +1,30 @@
+import pytest
+
 from src.dao import account_dao
 from src.entities import account
 from controllers import login
+from connectors import g_connector
 
 
-def test_Login_login():
-    username = 'test'
-    password = 'qwerty'
+@pytest.fixture
+def fake_login(monkeypatch, username='test', password='qwerty'):
     hashed_password = account.hash_password(password)
+    credentials = login.Credentials(username, password)
 
-    dao = account_dao.AccountDao.create_from_data_source(
-        "account/admin", account_dao.AccountDao, True
-    )
-
-    dao.username = username
-    dao.password = hashed_password
-
+    dao = account_dao.AccountDao({'username': username,  'password': hashed_password})
     dao.apply('account')
 
-    credentials = login.Credentials("test", password)
+    return credentials
 
+
+def test_Login_login(fake_login):
+    credentials = fake_login
     result = login.Login.try_login(credentials)
 
     code, entity = result
 
     assert code == 0
-    assert entity.username == username
+    assert entity.username == credentials.username
 
 
 def test_Login_register():

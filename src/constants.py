@@ -1,4 +1,5 @@
 CONNECTOR_CONFIG = "configs/connector.ini"
+UI_CONFIG = "configs/ui.ini"
 DAO_CONFIGS = "configs/dao/"
 
 

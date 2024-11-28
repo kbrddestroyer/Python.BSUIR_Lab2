@@ -1,22 +1,11 @@
 """
 Entrypoint
 """
-from controllers import login
+from ui import g_ui_controller
 
 
 def main():
-    username = input('> ')
-    password = input('> ')
-
-    credentials = login.Credentials(username, password)
-
-    result, entity = login.Login.try_login(credentials)
-
-    if not entity:
-        print(f"Login invalid, error code: {result}")
-        return
-
-    print(f"Logged in as {entity.username}")
+    g_ui_controller.process_login()
 
 
 if __name__ == "__main__":
