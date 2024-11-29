@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import typing
 
-from typing import override
 from ui import ui_controller
 from controllers import account_controller
+
+from typing import override
 
 
 class CLIController(ui_controller.UIBase):
