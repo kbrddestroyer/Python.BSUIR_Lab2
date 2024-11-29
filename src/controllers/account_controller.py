@@ -27,12 +27,16 @@ class REGISTER_RESULT:
     INVALID_USERNAME = 1
 
 
-class Login:
+class AccountController:
+    @staticmethod
+    def fetch_account_by_username(username: str) -> account_dao.AccountDao:
+        return account_dao.AccountDao.create_from_data_source(
+            f'accounts/{username}', account_dao.AccountDao, True
+        )
+
     @staticmethod
     def try_login(credentials: Credentials) -> (int, Optional[account.Account]):
-        fetched = account_dao.AccountDao.create_from_data_source(
-            f"account/{credentials.username}", account_dao.AccountDao, True
-        )
+        fetched = AccountController.fetch_account_by_username(credentials.username)
         if not fetched:
             return LOGIN_RESULT.INVALID_USERNAME, None
 
@@ -48,9 +52,7 @@ class Login:
 
     @staticmethod
     def try_register(credentials: Credentials) -> (int, Optional[account.Account]):
-        fetched = account_dao.AccountDao.create_from_data_source(
-            f"account/{credentials.username}", account_dao.AccountDao, True
-        )
+        fetched = AccountController.fetch_account_by_username(credentials.username)
 
         if fetched.__dict__():
             return REGISTER_RESULT.INVALID_USERNAME, None
@@ -59,6 +61,20 @@ class Login:
         acc.username = credentials.username
         acc.password = credentials.password
 
-        acc.to_dao().apply("account")
+        acc.to_dao().apply()
 
         return REGISTER_RESULT.SUCCESS, acc
+
+    @staticmethod
+    def try_delete(credentials: Credentials) -> bool:
+        fetched = AccountController.fetch_account_by_username(credentials.username)
+
+        if not fetched.__dict__():
+            print('No entity')
+            return False
+        hashed = account.hash_password(credentials.password)
+        if fetched.password != hashed:
+            return False
+
+        fetched.delete_self()
+        return True

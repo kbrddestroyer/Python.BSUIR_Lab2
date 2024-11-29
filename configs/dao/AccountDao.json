@@ -1,4 +1,5 @@
 {
+  "table": "accounts",
   "fields": [
     "username", "password", "type", "flags"
   ],

@@ -1,10 +1,4 @@
-from __future__ import annotations
-
-import typing
-import configparser
-
 from abc import abstractmethod
-from constants import UI_CONFIG
 
 
 class UIBase:
@@ -13,4 +7,12 @@ class UIBase:
 
     @abstractmethod
     def process_login(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def process_register(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def process_delete(self):
         raise NotImplementedError

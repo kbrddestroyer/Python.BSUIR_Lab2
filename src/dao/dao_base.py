@@ -68,8 +68,13 @@ class DaoBase:
             return
         return super().__setattr__(item, value)
 
-    def apply(self, destination: str):
-        g_connector.insert(destination, self)
+    def apply(self):
+        config = DaoBase.CONFIGS[self._classname]
+        g_connector.insert(config['table'], self)
+
+    def delete_self(self):
+        config = DaoBase.CONFIGS[self._classname]
+        g_connector.remove(config['table'], self.primary_key)
 
     @staticmethod
     def create_from_data_source(source: str, cls: Type[DaoBase], is_single: bool = False) -> DaoBase or Dict[Any, DaoBase]:

@@ -18,6 +18,7 @@ class JsonConnector(connector_base.ConnectorBase):
         self.__file = JsonConnector.__open_file(filename)
         self.__data = self.__prepare_data()
 
+    @override
     def finish(self) -> None:
         self.__save_data()
 
@@ -69,6 +70,11 @@ class JsonConnector(connector_base.ConnectorBase):
     @override
     def insert(self, destination: str, dao: dao_base.DaoBase) -> None:
         self.write(destination, dao.primary_key, dao.__dict__())
+
+    @override
+    def remove(self, destination: str, key: dao_base):
+        if key in self.__data.get(destination, {}):
+            self.__data[destination].pop(key)
 
     def __getitem__(self, key: str) -> Any:
         return self.__data.get(key, None)

@@ -37,3 +37,11 @@ class ConnectorBase:
     @abstractmethod
     def insert(self, destination: str, dao: Any) -> None:
         raise NotImplementedError
+
+    @abstractmethod
+    def remove(self, destination: str, key: Any) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def finish(self):
+        raise NotImplementedError
