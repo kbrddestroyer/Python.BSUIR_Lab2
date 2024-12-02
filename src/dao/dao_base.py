@@ -28,7 +28,6 @@ class DaoConfig:
 
 
 class DaoBase:
-    FIELDS = ("_classname", "_data", "_primary_key",  "__class__")
     CONFIGS = {}
 
     def __init__(self, data: Dict) -> None:
@@ -36,7 +35,13 @@ class DaoBase:
         if classname not in DaoBase.CONFIGS:
             DaoBase.CONFIGS[classname] = DaoConfig(classname)
 
+        self._fields = DaoBase.CONFIGS[classname]['fields']
         self._data = data
+
+        for k, v in self._fields.items():
+            if k not in self._data:
+                self._data[k] = v
+
         self._classname = classname
         self._primary_key = DaoBase.CONFIGS[classname]['primary']
 
@@ -54,16 +59,16 @@ class DaoBase:
         self._data[key] = value
 
     def __getattribute__(self, item):
-        if item in DaoBase.FIELDS:
+        if item[0] == '_':
             return super().__getattribute__(item)
-        if item in DaoBase.CONFIGS[self._classname]["fields"]:
+        if item in self._fields:
             return super().__getattribute__("_data").get(item)
         return super().__getattribute__(item)
 
     def __setattr__(self, item, value):
-        if item in DaoBase.FIELDS:
+        if item[0] == '_':
             return super().__setattr__(item, value)
-        if item in DaoBase.CONFIGS[self._classname]["fields"]:
+        if item in self._fields:
             super().__getattribute__("_data")[item] = value
             return
         return super().__setattr__(item, value)

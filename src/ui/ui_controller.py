@@ -6,6 +6,10 @@ class UIBase:
         pass
 
     @abstractmethod
+    def start(self):
+        raise NotImplementedError
+
+    @abstractmethod
     def process_login(self):
         raise NotImplementedError
 

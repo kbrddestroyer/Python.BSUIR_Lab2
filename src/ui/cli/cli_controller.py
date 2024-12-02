@@ -13,6 +13,10 @@ class CLIController(ui_controller.UIBase):
         super().__init__()
 
     @override
+    def start(self) -> None:
+        pass
+
+    @override
     def process_login(self):
         username = input('> ')
         password = input('> ')

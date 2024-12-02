@@ -6,7 +6,7 @@ from connectors import g_connector
 
 
 def main():
-    g_ui_controller.process_delete()
+    g_ui_controller.start()
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from hashlib import md5
 from entities import entity
 
 from dao import account_dao
+from constants import ACCOUNTS
 
 if typing.TYPE_CHECKING:
     from typing import Optional, Any
@@ -50,17 +51,31 @@ class Account(entity.Entity):
         super().__init__()
 
         self.__username: Optional[str] = None
+        self.__type = ACCOUNTS.ACCOUNT_CUSTOMER
+        self.__flags = 0
 
     def from_dao(self, dao: account_dao.AccountDao):
         self.__username = dao.username
         self.__password_helper = dao.password
+        self.__type = dao.type
+        self.__flags = dao.flags
 
     def to_dao(self) -> account_dao.AccountDao:
         data = {
             'username': self.__username,
-            'password': self.__password_helper
+            'password': self.__password_helper,
+            'type': self.__type,
+            'flags': self.__flags
         }
         return account_dao.AccountDao(data)
+
+    @property
+    def type(self):
+        return self.__type
+
+    @property
+    def flags(self):
+        return self.__flags
 
     @property
     def username(self) -> Optional[str]:
