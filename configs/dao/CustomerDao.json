@@ -1,0 +1,10 @@
+{
+  "table": "user_data",
+  "fields": {
+    "username":  "None",
+    "timestamp": 0,
+    "blood_pressure": 0,
+    "pulse": 0
+  },
+  "primary": "username"
+}
