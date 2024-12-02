@@ -45,8 +45,7 @@ class AccountController:
         if hashed_password != fetched.password:
             return LOGIN_RESULT.INVALID_PASSWORD, None
 
-        acc = account.Account()
-        acc.from_dao(fetched)
+        acc = account.Account(fetched)
 
         return LOGIN_RESULT.SUCCESS, acc
 
@@ -61,7 +60,7 @@ class AccountController:
         acc.username = credentials.username
         acc.password = credentials.password
 
-        acc.to_dao().apply()
+        acc.save()
 
         return REGISTER_RESULT.SUCCESS, acc
 

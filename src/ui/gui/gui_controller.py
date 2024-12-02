@@ -15,6 +15,7 @@ from constants import UI_CONFIG, ACCOUNTS, FLAGS
 from dao import dao_base, account_dao
 from entities import account
 
+from ui.gui.processor import account_processor
 
 class GuiConfig:
     GUI_KEY = 'GUI_CONFIG'
@@ -35,7 +36,17 @@ class GUIController(ui_controller.UIBase):
         window = self._window = tkinter.Tk()
         window.minsize(640, 480)
         window.title("Application")
+
+        self._account = None
         self._create_login_window()
+
+    def _create_menu(self):
+        change_creds = partial(account_processor.change_credentials_processor, self._account)
+        show_info = partial(account_processor.show_account_info, self._account)
+
+        window = self._window
+        tkinter.Button(window, text='Change password', command=change_creds).pack()
+        tkinter.Button(window, text='Show info', command=show_info).pack()
 
     @staticmethod
     def render_function(func):
@@ -75,14 +86,15 @@ class GUIController(ui_controller.UIBase):
 
         index = 0
 
-        for dao in accounts.values():
-            acc = account.Account()
-            acc.from_dao(dao)
+        root = tkinter.Frame(window)
 
-            tkinter.Label(window, text=acc.username).grid(row=index, column=0)
-            tkinter.Label(window, text=ACCOUNTS.TO_STRING[acc.type]).grid(row=index, column=1)
+        for dao in accounts.values():
+            acc = account.Account(dao)
+
+            tkinter.Label(root, text=acc.username).grid(row=index, column=0)
+            tkinter.Label(root, text=ACCOUNTS.TO_STRING[acc.type]).grid(row=index, column=1)
             button = tkinter.Button(
-                window,
+                root,
                 text=FLAGS.TO_BTN_LABEL[acc.flags]
             )
 
@@ -92,6 +104,8 @@ class GUIController(ui_controller.UIBase):
 
             button.grid(row=index, column=3)
             index += 1
+
+        root.pack()
 
     def __show_customer_panel(self):
         pass
@@ -104,6 +118,10 @@ class GUIController(ui_controller.UIBase):
         if not account:
             tkinter.messagebox.showerror('Error', 'Cannot render account window with NoneType')
             return
+
+        self._account = account
+        self._create_menu()
+
         if account.type == ACCOUNTS.ACCOUNT_ADMIN:
             self.__show_admin_panel()
         elif account.type == ACCOUNTS.ACCOUNT_CUSTOMER:
@@ -138,34 +156,7 @@ class GUIController(ui_controller.UIBase):
 
     @override
     def process_register(self):
-        window = tkinter.Tk()
-        window.title('Register')
-
-        login = tkinter.Entry(window)
-        login.pack(padx=10, pady=5)
-        password = tkinter.Entry(window, show='*')
-        password.pack()
-        confirm = tkinter.Entry(window, show='*')
-        confirm.pack(padx=10, pady=5)
-
-        def try_register():
-            if password.get() != confirm.get():
-                tkinter.messagebox.showerror('Error', 'Passwords do not match')
-                return
-
-            credentials = account_controller.Credentials(
-                login.get(),
-                password.get()
-            )
-            result, entity = account_controller.AccountController.try_register(credentials)
-
-            if not entity:
-                tkinter.messagebox.showerror('Register Error', f'Invalid Credentials: {result}')
-            window.destroy()
-
-        tkinter.Button(window, text='Create account', command=try_register).pack(padx=10, pady=10)
-
-        window.mainloop()
+        account_processor.process_register()
 
     @override
     def process_delete(self):
