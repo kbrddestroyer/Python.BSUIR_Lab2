@@ -5,11 +5,15 @@ import tkinter.messagebox
 import tkinter
 import typing
 import configparser
+from functools import partial
 
 from ui import ui_controller
+from ui.gui import admin_panel
 from controllers import account_controller
 from typing import override
-from constants import UI_CONFIG, ACCOUNTS
+from constants import UI_CONFIG, ACCOUNTS, FLAGS
+from dao import dao_base, account_dao
+from entities import account
 
 
 class GuiConfig:
@@ -67,6 +71,28 @@ class GUIController(ui_controller.UIBase):
         window = self._window
         window.title('Admin panel')
 
+        accounts = dao_base.DaoBase.create_from_data_source('accounts', account_dao.AccountDao)
+
+        index = 0
+
+        for dao in accounts.values():
+            acc = account.Account()
+            acc.from_dao(dao)
+
+            tkinter.Label(window, text=acc.username).grid(row=index, column=0)
+            tkinter.Label(window, text=ACCOUNTS.TO_STRING[acc.type]).grid(row=index, column=1)
+            button = tkinter.Button(
+                window,
+                text=FLAGS.TO_BTN_LABEL[acc.flags]
+            )
+
+            button.config(
+                command=partial(admin_panel.AdminPanel.toggle_ban, acc, button)
+            )
+
+            button.grid(row=index, column=3)
+            index += 1
+
     def __show_customer_panel(self):
         pass
 
@@ -102,6 +128,10 @@ class GUIController(ui_controller.UIBase):
 
         if not entity:
             tkinter.messagebox.showerror('Login Error', f'Invalid Credentials: {result}')
+            return
+
+        if entity.flags == FLAGS.ACCOUNT_BLOCKED:
+            tkinter.messagebox.showerror('Login Error', 'Your account is blocked')
             return
 
         self._create_account_interface(entity)

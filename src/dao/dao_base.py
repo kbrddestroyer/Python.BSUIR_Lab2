@@ -86,6 +86,9 @@ class DaoBase:
         data = g_connector.get_from(source)
         objects = {}
 
+        if not data:
+            return None
+
         if is_single:
             return cls(data)
 

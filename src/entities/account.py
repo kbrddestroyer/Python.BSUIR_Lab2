@@ -21,11 +21,12 @@ class HashedValue:
     Automatically converts variable to md5 hash
     """
 
-    def __init__(self) -> None:
-        self.__name = None
+    def __init__(self, name: str = None) -> None:
+        self.__name = name
 
     def __set_name__(self, owner: Any, name: str) -> None:
-        self.__name = f"_{owner.__name__}__{name}_desc"
+        if not self.__name:
+            self.__name = f"_{owner.__name__}__{name}_desc"
 
     def __get__(self, instance: Any, _: type = None) -> Any:
         return getattr(instance, self.__name)
@@ -45,25 +46,26 @@ class Account(entity.Entity):
     - `self.password`: password (str or None)
     """
 
-    __password_helper = HashedValue()
+    __password_helper = HashedValue('_Account__password')
 
     def __init__(self):
         super().__init__()
 
         self.__username: Optional[str] = None
+        self.__password = None
         self.__type = ACCOUNTS.ACCOUNT_CUSTOMER
         self.__flags = 0
 
     def from_dao(self, dao: account_dao.AccountDao):
         self.__username = dao.username
-        self.__password_helper = dao.password
+        self.__password = dao.password
         self.__type = dao.type
         self.__flags = dao.flags
 
     def to_dao(self) -> account_dao.AccountDao:
         data = {
             'username': self.__username,
-            'password': self.__password_helper,
+            'password': self.__password,
             'type': self.__type,
             'flags': self.__flags
         }
@@ -76,6 +78,10 @@ class Account(entity.Entity):
     @property
     def flags(self):
         return self.__flags
+
+    @flags.setter
+    def flags(self, flags: int):
+        self.__flags = flags
 
     @property
     def username(self) -> Optional[str]:

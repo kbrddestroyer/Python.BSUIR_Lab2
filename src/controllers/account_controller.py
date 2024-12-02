@@ -54,7 +54,7 @@ class AccountController:
     def try_register(credentials: Credentials) -> (int, Optional[account.Account]):
         fetched = AccountController.fetch_account_by_username(credentials.username)
 
-        if fetched.__dict__():
+        if fetched:
             return REGISTER_RESULT.INVALID_USERNAME, None
 
         acc = account.Account()
