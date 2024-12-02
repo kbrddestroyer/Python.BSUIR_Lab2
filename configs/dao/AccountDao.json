@@ -1,5 +1,10 @@
 {
-  "fields": [
-    "username", "password"
-  ]
+  "table": "accounts",
+  "fields": {
+    "username":  "None",
+    "password":  "None",
+    "type": 2,
+    "flags": 0
+  },
+  "primary": "username"
 }
