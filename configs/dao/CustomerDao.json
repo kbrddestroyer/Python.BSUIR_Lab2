@@ -1,0 +1,12 @@
+{
+  "table": "customer_data",
+  "fields": {
+    "unique_id": 0,
+    "username":  "None",
+    "timestamp": 0,
+    "blood_pressure": 0,
+    "pulse": 0,
+    "steps": 0
+  },
+  "primary": "unique_id"
+}

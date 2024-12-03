@@ -5,6 +5,7 @@ import json
 
 from typing import override
 from connectors import connector_base
+from entities import entity
 
 if typing.TYPE_CHECKING:
     from typing import Any, Optional, Dict
@@ -39,6 +40,8 @@ class JsonConnector(connector_base.ConnectorBase):
             return {}
 
     def __save_data(self) -> None:
+        entity.finalize_all()
+
         if self.__file:
             self.__file.close()
         with open(self.__filename, 'w') as f:

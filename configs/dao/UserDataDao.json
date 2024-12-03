@@ -1,0 +1,13 @@
+{
+  "table": "user_data",
+  "fields": {
+    "username":  "None",
+    "name":  "None",
+    "phone": "None",
+    "address": "None",
+    "email": "noreply@example.com",
+    "photo": "https://example.com",
+    "birthday": 0
+  },
+  "primary": "username"
+}

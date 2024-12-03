@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import typing
+import tkinter
+
+from typing import override
 
 from hashlib import md5
-from entities import entity
+from entities import entity, user_data
 
 from dao import account_dao
 from constants import ACCOUNTS
@@ -48,20 +51,21 @@ class Account(entity.Entity):
 
     __password_helper = HashedValue('_Account__password')
 
-    def __init__(self):
+    def __init__(self, dao: Optional[account_dao.AccountDao] = None):
+        if not dao:
+            dao = account_dao.AccountDao({})
+        self.from_dao(dao)
         super().__init__()
 
-        self.__username: Optional[str] = None
-        self.__password = None
-        self.__type = ACCOUNTS.ACCOUNT_CUSTOMER
-        self.__flags = 0
-
+    @override
     def from_dao(self, dao: account_dao.AccountDao):
         self.__username = dao.username
         self.__password = dao.password
         self.__type = dao.type
         self.__flags = dao.flags
+        self.__user_data = user_data.UserData(self)
 
+    @override
     def to_dao(self) -> account_dao.AccountDao:
         data = {
             'username': self.__username,
@@ -98,6 +102,15 @@ class Account(entity.Entity):
     @password.setter
     def password(self, password: str) -> None:
         self.__password_helper = password
+
+    @override
+    def save(self):
+        self.__user_data.save()
+        super().save()
+
+    @override
+    def create_widget(self, window: tkinter.Tk):
+        self.__user_data.create_widget(window)
 
     def __str__(self):
         return f"Account {self.__username}:{self.id}"

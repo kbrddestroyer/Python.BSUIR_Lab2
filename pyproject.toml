@@ -8,7 +8,8 @@ dependencies = [
     "tk",
     "pytest",
     "setuptools",
-    "importlib"
+    "importlib",
+    "tkcalendar"
 ]
 
 [build-system]
