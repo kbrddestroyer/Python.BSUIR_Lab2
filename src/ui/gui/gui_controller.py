@@ -12,10 +12,10 @@ from ui.gui import admin_panel
 from controllers import account_controller
 from typing import override
 from constants import UI_CONFIG, ACCOUNTS, FLAGS
-from dao import dao_base, account_dao
+from dao import dao_base, account_dao, customer_dao
 from entities import account
 
-from ui.gui.processor import account_processor
+from ui.gui.processor import account_processor, customer_processor
 
 class GuiConfig:
     GUI_KEY = 'GUI_CONFIG'
@@ -108,7 +108,10 @@ class GUIController(ui_controller.UIBase):
         root.pack()
 
     def __show_customer_panel(self):
-        pass
+        command = partial(customer_processor.create_user_data_view, self._account)
+        create = partial(customer_processor.create_new_data, self._account)
+        tkinter.Button(self._window, text='Show records', command=command).pack()
+        tkinter.Button(self._window, text='New record', command=create).pack()
 
     def __show_worker_panel(self):
         pass

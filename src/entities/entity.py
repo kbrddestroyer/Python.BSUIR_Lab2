@@ -9,13 +9,11 @@ if typing.TYPE_CHECKING:
 
 
 class Entity:
-    ENTITIES = 0
-    G_ENTITIES = []
+    G_ENTITIES = {}
 
     def __init__(self):
-        self.__id = Entity.ENTITIES
-        Entity.ENTITIES += 1
-        Entity.G_ENTITIES.append(self)
+        self.__id = len(Entity.G_ENTITIES)
+        Entity.G_ENTITIES[self.id] = self
 
     @property
     def id(self):
@@ -36,12 +34,15 @@ class Entity:
     def save(self):
         self.to_dao().apply()
 
+    def destroy(self):
+        Entity.G_ENTITIES.pop(self.__id)
+
     def finalize(self):
         pass
 
     def __setattr__(self, key, value):
         super().__setattr__(key, value)
-        if self in Entity.G_ENTITIES:
+        if self in Entity.G_ENTITIES.values():
             self.save()
 
     def __str__(self):
@@ -49,5 +50,5 @@ class Entity:
 
 
 def finalize_all():
-    for entity in Entity.G_ENTITIES:
+    for entity in Entity.G_ENTITIES.values():
         entity.finalize()

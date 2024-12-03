@@ -11,13 +11,21 @@ class DaoWidget(tkinter.Frame):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-    def set_dao(self, dao: dao_base.DaoBase) -> None:
+    def set_dao(self, dao: dao_base.DaoBase, blacklist=None, show_btn = True) -> None:
+        if blacklist is None:
+            blacklist = []
         data = {}
 
         for k, v in dao.__dict__().items():
+            if k in blacklist:
+                continue
+
             data[k] = entry = tkinter.Entry(self)
             entry.pack()
             entry.insert(0, v)
+
+        if not show_btn:
+            return
 
         def apply():
             for k, v in data.items():
