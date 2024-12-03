@@ -5,6 +5,9 @@ import tkinter.messagebox
 import tkinter
 import typing
 import configparser
+import tkcalendar
+import datetime
+
 from functools import partial
 
 from ui import ui_controller
@@ -116,6 +119,31 @@ class GUIController(ui_controller.UIBase):
 
     def __show_worker_panel(self):
         tkinter.Button(self._window, text='Show records', command=worker_processor.create_all_customers_view).pack()
+
+        entry = tkinter.Entry(self._window)
+        entry.pack()
+
+        def search():
+            username = entry.get()
+
+            worker_processor.show_customer(username)
+
+        tkinter.Button(self._window, text='Search', command=search).pack()
+
+        start = tkcalendar.DateEntry(self._window, selectmode='day', year=2021)
+        stop = tkcalendar.DateEntry(self._window, selectmode='day', year=2025)
+
+        start.pack()
+        stop.pack()
+
+        def filter_by_time():
+            start_date = datetime.datetime.strptime(start.get(), '%m/%d/%y').timestamp()
+            stop_date = datetime.datetime.strptime(stop.get(), '%m/%d/%y').timestamp()
+
+            worker_processor.filter_by_data(start_date, stop_date)
+
+        tkinter.Button(self._window, text='Filter', command=filter_by_time).pack()
+
 
     @render_function
     def _create_account_interface(self, account):
