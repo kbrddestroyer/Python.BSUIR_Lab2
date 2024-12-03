@@ -15,7 +15,8 @@ from constants import UI_CONFIG, ACCOUNTS, FLAGS
 from dao import dao_base, account_dao, customer_dao
 from entities import account
 
-from ui.gui.processor import account_processor, customer_processor
+from ui.gui.processor import account_processor, customer_processor, worker_processor
+
 
 class GuiConfig:
     GUI_KEY = 'GUI_CONFIG'
@@ -114,7 +115,7 @@ class GUIController(ui_controller.UIBase):
         tkinter.Button(self._window, text='New record', command=create).pack()
 
     def __show_worker_panel(self):
-        pass
+        tkinter.Button(self._window, text='Show records', command=worker_processor.create_all_customers_view).pack()
 
     @render_function
     def _create_account_interface(self, account):
