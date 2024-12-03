@@ -48,9 +48,15 @@ class GUIController(ui_controller.UIBase):
         change_creds = partial(account_processor.change_credentials_processor, self._account)
         show_info = partial(account_processor.show_account_info, self._account)
 
+        show_msgs = partial(account_processor.show_messages, self._account)
+        send_msg = partial(account_processor.create_message, self._account)
+
         window = self._window
         tkinter.Button(window, text='Change password', command=change_creds).pack()
         tkinter.Button(window, text='Show info', command=show_info).pack()
+        tkinter.Button(window, text='Show messages', command=show_msgs).pack()
+        tkinter.Button(window, text='Send message', command=send_msg).pack()
+
 
     @staticmethod
     def render_function(func):

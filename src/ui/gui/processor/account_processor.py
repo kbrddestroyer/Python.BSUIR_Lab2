@@ -3,8 +3,11 @@ from __future__ import annotations
 import typing
 import tkinter
 
+from functools import partial
+
+from dao import dao_base, message_dao
 from controllers import account_controller
-from entities import account
+from entities import account, message
 
 if typing.TYPE_CHECKING:
     from entities import account
@@ -73,3 +76,46 @@ def show_account_info(acc: account.Account):
     acc.create_widget(window)
 
     window.mainloop()
+
+
+def show_messages(acc: account.Account):
+    messages = filter(
+        lambda message: message.destination == acc.username,
+        dao_base.DaoBase.create_from_data_source(
+        'messages', message_dao.MessageDao
+    ).values())
+
+    window = tkinter.Tk()
+    window.title('Messages')
+
+    for msg_dao in messages:
+        if msg_dao.read:
+            continue
+
+        container = tkinter.Frame(window)
+        label = tkinter.Label(container, text=f'From: {msg_dao.username}: {msg_dao.message}')
+        label.pack()
+
+        def read(msg, c):
+            msg.read = True
+            c.destroy()
+
+        command = partial(read, msg_dao, container)
+
+        tkinter.Button(container, text='Mark as read', command=command).pack()
+        container.pack()
+
+    window.mainloop()
+
+
+def create_message(acc: account.Account):
+    data = {
+        'unique_id': message.Message.generate_id(),
+        'username': acc.username
+    }
+
+    window = tkinter.Tk()
+    window.title('Send message')
+
+    msg = message.Message(message_dao.MessageDao(data))
+    msg.create_widget(window)

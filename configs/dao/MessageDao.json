@@ -1,0 +1,11 @@
+{
+  "table": "messages",
+  "fields": {
+    "unique_id": 0,
+    "username":  "None",
+    "destination":  "None",
+    "message": "None",
+    "read": false
+  },
+  "primary": "unique_id"
+}
