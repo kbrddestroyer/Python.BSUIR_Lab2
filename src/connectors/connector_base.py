@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import typing
-import configparser
 
 from abc import abstractmethod
-from constants import CONNECTOR_CONFIG
 
 if typing.TYPE_CHECKING:
     from typing import Any, Optional

@@ -24,6 +24,7 @@ class Customer(entity.Entity):
         self.__timestamp = dao.timestamp
         self.__blood_pressure = dao.blood_pressure
         self.__pulse = dao.pulse
+        self.__steps = dao.steps
 
     @override
     def to_dao(self) -> dao_base.DaoBase:
@@ -32,7 +33,8 @@ class Customer(entity.Entity):
             'username': self.__username,
             'timestamp': self.__timestamp,
             'blood_pressure': self.__blood_pressure,
-            'pulse': self.__pulse
+            'pulse': self.__pulse,
+            'steps': self.__steps
         }
 
         return customer_dao.CustomerDao(data)
